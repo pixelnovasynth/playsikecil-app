@@ -25,20 +25,14 @@
         body {
             background-color: var(--bg-cream);
             color: var(--text-dark);
-            display: flex;
-            justify-content: center;
-            /* Simulate mobile view on desktop */
-            min-height: 100vh;
+            /* Buang paparan force-mobile */
         }
 
         .app-container {
             width: 100%;
-            max-width: 414px; /* iPhone Max width */
-            background-color: var(--bg-cream);
             position: relative;
-            overflow-x: hidden;
-            box-shadow: 0 0 20px rgba(0,0,0,0.05);
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         /* SCREEN MANAGER */
@@ -46,7 +40,9 @@
             display: none;
             padding: 20px;
             animation: fadeIn 0.4s ease-in-out;
-            padding-bottom: 80px; /* Space for bottom nav */
+            padding-bottom: 100px; /* Ruang untuk bottom nav di mobile */
+            max-width: 1200px; /* Limit lebar untuk desktop */
+            margin: 0 auto; /* Tengah-tengahkan content di desktop */
         }
         .screen.active {
             display: block;
@@ -89,110 +85,119 @@
             font-size: 1rem;
             margin-bottom: 15px;
             outline: none;
-            font-family: 'Quicksand', sans-serif;
         }
 
-        /* MASCOT PLACEHOLDER */
+        /* MASCOT & GRAPHICS */
         .mascot-box {
-            width: 150px;
-            height: 150px;
-            background-color: var(--secondary-teal);
-            border-radius: 50%;
-            margin: 0 auto 20px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 4rem;
-            box-shadow: 0 8px 15px rgba(32, 178, 170, 0.3);
+            width: 150px; height: 150px; background-color: var(--secondary-teal);
+            border-radius: 50%; margin: 0 auto 20px auto; display: flex;
+            align-items: center; justify-content: center; color: white;
+            font-size: 4rem; box-shadow: 0 8px 15px rgba(32, 178, 170, 0.3);
         }
 
         /* SPLASH SCREEN */
         #splash-screen {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: var(--primary-orange);
-            color: var(--white);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            height: 100vh; background-color: var(--primary-orange); color: var(--white);
+            max-width: 100%; padding-bottom: 0;
         }
         #splash-screen .mascot-box { background-color: var(--white); color: var(--primary-orange); }
 
+        /* LOGIN SCREEN */
+        .login-curve {
+            height: 150px; background-color: #A3E4D7; border-radius: 0 0 50% 50%;
+            margin: -20px -20px 40px -20px; display: flex; align-items: flex-end;
+            justify-content: center; padding-bottom: 20px;
+        }
+        .login-wrapper { max-width: 450px; margin: 0 auto; } /* Tengah di desktop */
+
         /* HOME DASHBOARD */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .user-avatar {
-            width: 50px; height: 50px; border-radius: 50%; background-color: var(--secondary-teal);
-        }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .user-avatar { width: 50px; height: 50px; border-radius: 50%; background-color: var(--secondary-teal); font-size: 1.8rem; display: flex; align-items: center; justify-content: center; cursor: pointer;}
+        
         .promo-banner {
-            background-color: var(--secondary-teal);
-            color: var(--white);
-            border-radius: 20px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 25px;
+            background-color: var(--secondary-teal); color: var(--white);
+            border-radius: 20px; padding: 25px; display: flex; align-items: center;
+            justify-content: space-between; margin-bottom: 25px;
         }
         .promo-banner .btn-small {
             background-color: var(--white); color: var(--secondary-teal);
-            border-radius: 20px; padding: 8px 15px; border: none; font-weight: bold; cursor: pointer;
+            border-radius: 20px; padding: 10px 20px; border: none; font-weight: bold; cursor: pointer;
         }
         
-        /* CATEGORY GRID */
-        .grid-categories {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
+        /* CATEGORY GRID (Mobile = 2 lajur, Desktop = 4 lajur) */
+        .grid-categories { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         .category-card {
-            background-color: var(--white);
-            border-radius: 20px;
-            padding: 20px 10px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: border 0.2s;
+            background-color: var(--white); border-radius: 20px; padding: 20px 10px;
+            text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); cursor: pointer;
+            border: 2px solid transparent; transition: all 0.2s;
         }
-        .category-card:hover { border: 2px solid var(--primary-orange); }
+        .category-card:hover { border: 2px solid var(--primary-orange); transform: translateY(-5px); }
         .cat-icon {
-            width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 10px auto;
-            display: flex; align-items: center; justify-content: center; font-size: 2rem;
+            width: 70px; height: 70px; border-radius: 50%; margin: 0 auto 10px auto;
+            display: flex; align-items: center; justify-content: center; font-size: 2.2rem;
         }
-        .cat-1 { background-color: #FFD166; }
-        .cat-2 { background-color: #06D6A0; }
-        .cat-3 { background-color: #EF476F; }
-        .cat-4 { background-color: #118AB2; }
+        .cat-1 { background-color: #FFD166; } .cat-2 { background-color: #06D6A0; }
+        .cat-3 { background-color: #EF476F; } .cat-4 { background-color: #118AB2; }
 
-        /* BOTTOM NAV */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            max-width: 414px;
-            background-color: var(--white);
-            display: flex;
-            justify-content: space-around;
-            padding: 15px 0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-            border-top-left-radius: 25px;
-            border-top-right-radius: 25px;
-            z-index: 100;
+        /* PROFILE SCREEN */
+        .stat-container {
+            background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            display: flex; justify-content: space-around; text-align: center; margin-bottom: 30px;
         }
-        .nav-item {
-            text-align: center;
-            color: #ccc;
-            font-size: 1.5rem;
-            cursor: pointer;
+        .stat-circle {
+            width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; font-size: 1.8rem; margin: 0 auto 10px auto;
         }
+
+        /* NAVIGATION BAR */
+        .main-nav {
+            position: fixed; bottom: 0; width: 100%; background-color: var(--white);
+            display: flex; justify-content: space-around; padding: 15px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05); border-top-left-radius: 25px;
+            border-top-right-radius: 25px; z-index: 100; transition: all 0.3s;
+        }
+        .nav-item { text-align: center; color: #ccc; font-size: 1.5rem; cursor: pointer; transition: 0.2s;}
         .nav-item.active { color: var(--primary-orange); }
-        .nav-item span { display: block; font-size: 0.7rem; font-weight: 700; margin-top: 4px; }
+        .nav-item span { display: block; font-size: 0.75rem; font-weight: 700; margin-top: 4px; }
+        .nav-item:hover { color: var(--primary-orange); }
+
+        /* =========================================
+           RESPONSIVE DESKTOP/TABLET VIEW
+           ========================================= */
+        @media (min-width: 768px) {
+            .screen {
+                padding-top: 120px; /* Tolak content ke bawah sikit sbb navbar kat atas */
+                padding-bottom: 40px;
+            }
+
+            /* Tukar Bottom Nav jadi Top Header Menu */
+            .main-nav {
+                top: 0; bottom: auto; border-radius: 0;
+                justify-content: flex-end; padding: 20px 50px; gap: 40px;
+                box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            }
+            .nav-item { display: flex; align-items: center; gap: 10px; }
+            .nav-item span { font-size: 1rem; margin-top: 0; }
+            .nav-item::before { content: ''; }
+
+            /* Grid jadi 4 kotak sebaris */
+            .grid-categories { grid-template-columns: repeat(4, 1fr); gap: 25px; }
+
+            /* Login Card kemas kat tengah */
+            .login-wrapper {
+                background: white; padding: 40px; border-radius: 20px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-top: 5vh;
+            }
+            .login-curve { display: none; } /* Buang curve di desktop supaya kemas */
+            
+            /* Banner Desktop lebih besar */
+            .promo-banner { padding: 40px; }
+            .promo-banner h3 { font-size: 2rem; }
+            .promo-banner p { font-size: 1.2rem; margin-bottom: 20px; }
+            .promo-banner .btn-small { font-size: 1.1rem; padding: 12px 30px; }
+            .promo-banner div:last-child { font-size: 8rem; } /* Icon singa besar sikit */
+        }
     </style>
 </head>
 <body>
@@ -201,29 +206,32 @@
 
     <div id="splash-screen" class="screen active">
         <div class="mascot-box">🐵</div>
-        <h1 style="font-size: 2.5rem; margin-top: 10px;">PlaySiKecil</h1>
-        <p style="font-size: 1.2rem; font-weight: 600;">Academy</p>
+        <h1 style="font-size: 3rem; margin-top: 10px;">PlaySiKecil</h1>
+        <p style="font-size: 1.5rem; font-weight: 600;">Academy</p>
     </div>
 
     <div id="login-screen" class="screen">
-        <div style="height: 150px; background-color: #A3E4D7; border-radius: 0 0 50% 50%; margin: -20px -20px 40px -20px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 20px;">
+        <div class="login-curve">
              <h2 style="color: white; font-size: 2rem;">Welcome!</h2>
         </div>
         
-        <div class="mascot-box">🦒</div>
-        <h2 class="text-center" style="margin-bottom: 25px; color: var(--primary-orange);">Mari Belajar & Bermain!</h2>
-        
-        <input type="email" class="input-rounded" placeholder="Email Ibu/Bapa">
-        <input type="password" class="input-rounded" placeholder="Kata Laluan">
-        
-        <button class="btn-pill" onclick="showScreen('home-screen')">Log Masuk</button>
+        <div class="login-wrapper">
+            <div class="mascot-box">🦒</div>
+            <h2 class="text-center" style="margin-bottom: 10px; color: var(--primary-orange);">Mari Belajar & Bermain!</h2>
+            <p class="text-center" style="margin-bottom: 25px; color: gray;">Log masuk untuk ibu bapa</p>
+            
+            <input type="email" class="input-rounded" placeholder="Email Ibu/Bapa">
+            <input type="password" class="input-rounded" placeholder="Kata Laluan">
+            
+            <button class="btn-pill" onclick="showScreen('home-screen')">Log Masuk</button>
+        </div>
     </div>
 
     <div id="home-screen" class="screen">
         <div class="header">
             <div>
-                <p style="color: gray; font-weight: 600;">Hai, Sayang!</p>
-                <h2 style="color: var(--primary-orange);">Ahmad Ali</h2>
+                <p style="color: gray; font-weight: 600; font-size: 1.1rem;">Hai, Sayang!</p>
+                <h2 style="color: var(--primary-orange); font-size: 2rem;">Ahmad Ali</h2>
             </div>
             <div class="user-avatar" onclick="showScreen('profile-screen')">👦🏻</div>
         </div>
@@ -231,68 +239,70 @@
         <div class="promo-banner">
             <div>
                 <h3>Belajar ABC Hari Ini!</h3>
-                <p style="font-size: 0.8rem; margin: 5px 0 10px 0;">Mari kenal huruf A - Z</p>
+                <p>Mari kenal huruf A - Z</p>
                 <button class="btn-small">Mula</button>
             </div>
-            <div style="font-size: 4rem;">🦁</div>
+            <div>🦁</div>
         </div>
 
-        <h3 style="margin-bottom: 15px;">Pilih Kategori:</h3>
+        <h3 style="margin-bottom: 20px; font-size: 1.5rem;">Pilih Kategori:</h3>
         <div class="grid-categories">
             <div class="category-card" onclick="alert('Buka PlaySiKecil Discover')">
                 <div class="cat-icon cat-1">🌍</div>
-                <h4>Discover</h4>
+                <h3>Discover</h3>
             </div>
             <div class="category-card" onclick="alert('Buka PlaySiKecil Read')">
                 <div class="cat-icon cat-2">📖</div>
-                <h4>Read</h4>
+                <h3>Read</h3>
             </div>
             <div class="category-card" onclick="alert('Buka PlaySiKecil Trace')">
                 <div class="cat-icon cat-3">🖍️</div>
-                <h4>Trace</h4>
+                <h3>Trace</h3>
             </div>
             <div class="category-card" onclick="alert('Buka PlaySiKecil Games')">
                 <div class="cat-icon cat-4">🎲</div>
-                <h4>Games</h4>
+                <h3>Games</h3>
             </div>
         </div>
     </div>
 
     <div id="profile-screen" class="screen">
-        <h2 class="text-center" style="color: var(--primary-orange); margin-bottom: 20px;">Pencapaian Saya</h2>
+        <h2 class="text-center" style="color: var(--primary-orange); margin-bottom: 30px; font-size: 2rem;">Pencapaian Saya</h2>
         
-        <div style="background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; text-align: center; margin-bottom: 20px;">
+        <div class="stat-container">
             <div>
-                <div style="width: 60px; height: 60px; background: #FFD166; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 5px auto;">⭐</div>
-                <h4>150</h4>
-                <p style="font-size: 0.7rem; color: gray;">Bintang</p>
+                <div class="stat-circle" style="background: #FFD166;">⭐</div>
+                <h2>150</h2>
+                <p style="color: gray; font-weight: bold;">Bintang</p>
             </div>
             <div>
-                <div style="width: 60px; height: 60px; background: #06D6A0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 5px auto;">🔥</div>
-                <h4>5 Hari</h4>
-                <p style="font-size: 0.7rem; color: gray;">Streak</p>
+                <div class="stat-circle" style="background: #06D6A0;">🔥</div>
+                <h2>5 Hari</h2>
+                <p style="color: gray; font-weight: bold;">Streak</p>
             </div>
             <div>
-                <div style="width: 60px; height: 60px; background: #EF476F; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 5px auto;">🏆</div>
-                <h4>Level 3</h4>
-                <p style="font-size: 0.7rem; color: gray;">Tahap</p>
+                <div class="stat-circle" style="background: #EF476F;">🏆</div>
+                <h2>Tahap 3</h2>
+                <p style="color: gray; font-weight: bold;">Level</p>
             </div>
         </div>
 
-        <button class="btn-pill" onclick="showScreen('home-screen')" style="background-color: var(--secondary-teal); box-shadow: 0 4px 0 #188c86;">Kembali ke Home</button>
+        <div style="max-width: 400px; margin: 0 auto;">
+            <button class="btn-pill" onclick="showScreen('home-screen')" style="background-color: var(--secondary-teal); box-shadow: 0 4px 0 #188c86;">Kembali ke Home</button>
+        </div>
     </div>
 
-    <div class="bottom-nav" id="bottomNav" style="display: none;">
-        <div class="nav-item active" onclick="showScreen('home-screen')">
+    <div class="main-nav" id="mainNav" style="display: none;">
+        <div class="nav-item active" onclick="switchNav(this); showScreen('home-screen')">
             🏠<span>Home</span>
         </div>
-        <div class="nav-item">
+        <div class="nav-item" onclick="switchNav(this); alert('Explore content!')">
             🔍<span>Explore</span>
         </div>
-        <div class="nav-item">
+        <div class="nav-item" onclick="switchNav(this); alert('Progress Report!')">
             📊<span>Progress</span>
         </div>
-        <div class="nav-item" onclick="showScreen('profile-screen')">
+        <div class="nav-item" onclick="switchNav(this); showScreen('profile-screen')">
             👤<span>Profile</span>
         </div>
     </div>
@@ -300,22 +310,22 @@
 </div>
 
 <script>
-    // Logik ringkas untuk tukar screen
     function showScreen(screenId) {
-        // Sorok semua screen
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        // Tunjuk screen yang dipilih
         document.getElementById(screenId).classList.add('active');
         
-        // Tunjuk atau sorok Bottom Nav
         if(screenId === 'splash-screen' || screenId === 'login-screen') {
-            document.getElementById('bottomNav').style.display = 'none';
+            document.getElementById('mainNav').style.display = 'none';
         } else {
-            document.getElementById('bottomNav').style.display = 'flex';
+            document.getElementById('mainNav').style.display = 'flex';
         }
     }
 
-    // Auto-hilang Splash Screen selepas 2.5 saat
+    function switchNav(element) {
+        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+        element.classList.add('active');
+    }
+
     setTimeout(() => {
         showScreen('login-screen');
     }, 2500);
