@@ -1,690 +1,324 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-<title>PlaySikecil — Belajar Sambil Bermain</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --orange:#FF8A3D;
-    --orange-deep:#F2650F;
-    --teal:#2EC4B6;
-    --teal-light:#D6F5F1;
-    --cream:#FFF6E8;
-    --cream-deep:#FFEBCF;
-    --yellow:#FFD166;
-    --white:#FFFFFF;
-    --ink:#4A3324;
-    --ink-soft:#8A7461;
-    --green:#6FCF97;
-    --pink:#FF7DA8;
-    --radius-lg:32px;
-    --radius-md:22px;
-    --radius-sm:14px;
-    --shadow-soft:0 10px 24px rgba(210,120,40,0.16);
-    --shadow-pop:0 14px 30px rgba(210,120,40,0.24);
-  }
-  *{box-sizing:border-box;}
-  html,body{height:100%;}
-  body{
-    margin:0;
-    font-family:'Quicksand',sans-serif;
-    background:#EDEDED;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-  }
-  h1,h2,h3,.brand,.nav-label,.big-num{font-family:'Baloo 2',cursive;}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlaySiKecil Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* COLOR PALETTE & VARIABLES */
+        :root {
+            --primary-orange: #FF8A00;
+            --secondary-teal: #20B2AA;
+            --bg-cream: #FFF9F0;
+            --text-dark: #4A4A4A;
+            --white: #FFFFFF;
+        }
 
-  /* Phone frame */
-  #phone{
-    width:390px;
-    height:844px;
-    background:var(--cream);
-    border-radius:46px;
-    box-shadow:0 30px 60px rgba(0,0,0,0.25);
-    overflow:hidden;
-    position:relative;
-    border:8px solid #2b2b2b;
-  }
-  .screen{
-    position:absolute;
-    inset:0;
-    display:none;
-    flex-direction:column;
-    overflow-y:auto;
-    -ms-overflow-style:none;
-    scrollbar-width:none;
-  }
-  .screen::-webkit-scrollbar{display:none;}
-  .screen.active{display:flex;}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Quicksand', sans-serif;
+        }
 
-  button{font-family:inherit;border:none;cursor:pointer;}
-  input{font-family:inherit;}
+        body {
+            background-color: var(--bg-cream);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            /* Simulate mobile view on desktop */
+            min-height: 100vh;
+        }
 
-  /* ---------- Reusable bits ---------- */
-  .pill-btn{
-    background:var(--orange);
-    color:var(--white);
-    font-weight:700;
-    font-size:17px;
-    padding:16px 28px;
-    border-radius:999px;
-    box-shadow:var(--shadow-pop);
-    transition:transform .15s ease;
-  }
-  .pill-btn:active{transform:scale(0.96);}
-  .pill-btn.secondary{background:var(--teal);}
-  .pill-btn.ghost{background:transparent;color:var(--orange-deep);box-shadow:none;border:2.5px solid var(--orange);}
+        .app-container {
+            width: 100%;
+            max-width: 414px; /* iPhone Max width */
+            background-color: var(--bg-cream);
+            position: relative;
+            overflow-x: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+            min-height: 100vh;
+        }
 
-  .input-field{
-    width:100%;
-    padding:16px 20px;
-    border-radius:999px;
-    border:2px solid #F3DDBB;
-    background:var(--white);
-    font-size:15px;
-    color:var(--ink);
-    margin-bottom:14px;
-    outline:none;
-  }
-  .input-field:focus{border-color:var(--orange);}
+        /* SCREEN MANAGER */
+        .screen {
+            display: none;
+            padding: 20px;
+            animation: fadeIn 0.4s ease-in-out;
+            padding-bottom: 80px; /* Space for bottom nav */
+        }
+        .screen.active {
+            display: block;
+        }
 
-  .top-safe{height:20px;flex-shrink:0;}
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-  /* ---------- Splash ---------- */
-  #screen-splash{
-    background:linear-gradient(180deg,var(--yellow) 0%, var(--orange) 100%);
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    color:var(--white);
-  }
-  .splash-hills{
-    position:absolute;bottom:0;left:0;right:0;
-  }
-  .splash-title{
-    font-size:38px;
-    font-weight:800;
-    color:var(--white);
-    text-shadow:0 4px 0 rgba(0,0,0,0.08);
-    margin:18px 0 4px;
-  }
-  .splash-sub{font-size:15px;font-weight:600;opacity:.95;margin-bottom:28px;}
-  .dot-loader{display:flex;gap:8px;margin-top:10px;}
-  .dot-loader span{width:9px;height:9px;border-radius:50%;background:var(--white);opacity:.6;animation:bounce 1.2s infinite;}
-  .dot-loader span:nth-child(2){animation-delay:.15s;}
-  .dot-loader span:nth-child(3){animation-delay:.3s;}
-  @keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:.5;}40%{transform:translateY(-6px);opacity:1;}}
+        /* TYPOGRAPHY */
+        h1, h2, h3 { font-weight: 700; }
+        .text-center { text-align: center; }
 
-  /* ---------- Auth ---------- */
-  #screen-auth{background:var(--cream);}
-  .auth-hero{
-    background:linear-gradient(180deg,var(--teal) 0%, #23A99C 100%);
-    height:270px;
-    border-radius:0 0 50% 50% / 0 0 60px 60px;
-    position:relative;
-    display:flex;align-items:center;justify-content:center;
-    flex-shrink:0;
-  }
-  .auth-card{
-    background:var(--white);
-    margin:-40px 20px 0;
-    border-radius:var(--radius-lg);
-    padding:28px 24px 24px;
-    box-shadow:var(--shadow-soft);
-    position:relative;
-    z-index:2;
-  }
-  .auth-tabs{display:flex;background:var(--cream-deep);border-radius:999px;padding:4px;margin-bottom:20px;}
-  .auth-tab{flex:1;text-align:center;padding:10px;border-radius:999px;font-weight:700;font-size:14px;color:var(--ink-soft);background:transparent;}
-  .auth-tab.active{background:var(--orange);color:var(--white);}
+        /* BUTTONS & INPUTS */
+        .btn-pill {
+            background-color: var(--primary-orange);
+            color: var(--white);
+            border: none;
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #D67400;
+            transition: transform 0.1s;
+            margin-top: 20px;
+        }
+        .btn-pill:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #D67400;
+        }
+        .input-rounded {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 25px;
+            border: 2px solid #FFE0B2;
+            background-color: var(--white);
+            font-size: 1rem;
+            margin-bottom: 15px;
+            outline: none;
+            font-family: 'Quicksand', sans-serif;
+        }
 
-  /* ---------- Home ---------- */
-  #screen-home{background:var(--cream);}
-  .home-header{padding:22px 20px 14px;display:flex;justify-content:space-between;align-items:center;}
-  .greeting-eyebrow{font-size:13px;color:var(--ink-soft);font-weight:600;}
-  .greeting-name{font-size:22px;font-weight:800;color:var(--ink);}
-  .avatar-circle{
-    width:48px;height:48px;border-radius:50%;
-    background:var(--yellow);
-    display:flex;align-items:center;justify-content:center;
-    box-shadow:var(--shadow-soft);
-    font-size:22px;
-  }
-  .streak-chip{
-    display:flex;align-items:center;gap:6px;
-    background:var(--white);
-    padding:8px 14px;border-radius:999px;
-    font-weight:700;font-size:13px;color:var(--orange-deep);
-    box-shadow:0 4px 10px rgba(210,120,40,0.1);
-  }
+        /* MASCOT PLACEHOLDER */
+        .mascot-box {
+            width: 150px;
+            height: 150px;
+            background-color: var(--secondary-teal);
+            border-radius: 50%;
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+            box-shadow: 0 8px 15px rgba(32, 178, 170, 0.3);
+        }
 
-  .promo-banner{
-    margin:6px 20px 22px;
-    background:linear-gradient(135deg,var(--orange) 0%,var(--orange-deep) 100%);
-    border-radius:var(--radius-lg);
-    padding:20px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    box-shadow:var(--shadow-pop);
-    position:relative;
-    overflow:hidden;
-  }
-  .promo-text h3{color:var(--white);font-size:19px;margin:0 0 4px;}
-  .promo-text p{color:rgba(255,255,255,0.9);font-size:12.5px;margin:0 0 12px;font-weight:600;}
-  .promo-btn{background:var(--white);color:var(--orange-deep);font-weight:800;font-size:13px;padding:9px 16px;border-radius:999px;}
+        /* SPLASH SCREEN */
+        #splash-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: var(--primary-orange);
+            color: var(--white);
+        }
+        #splash-screen .mascot-box { background-color: var(--white); color: var(--primary-orange); }
 
-  .section-label{padding:0 20px;font-size:17px;font-weight:800;color:var(--ink);margin:6px 0 14px;}
+        /* HOME DASHBOARD */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .user-avatar {
+            width: 50px; height: 50px; border-radius: 50%; background-color: var(--secondary-teal);
+        }
+        .promo-banner {
+            background-color: var(--secondary-teal);
+            color: var(--white);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+        .promo-banner .btn-small {
+            background-color: var(--white); color: var(--secondary-teal);
+            border-radius: 20px; padding: 8px 15px; border: none; font-weight: bold; cursor: pointer;
+        }
+        
+        /* CATEGORY GRID */
+        .grid-categories {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .category-card {
+            background-color: var(--white);
+            border-radius: 20px;
+            padding: 20px 10px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border 0.2s;
+        }
+        .category-card:hover { border: 2px solid var(--primary-orange); }
+        .cat-icon {
+            width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 10px auto;
+            display: flex; align-items: center; justify-content: center; font-size: 2rem;
+        }
+        .cat-1 { background-color: #FFD166; }
+        .cat-2 { background-color: #06D6A0; }
+        .cat-3 { background-color: #EF476F; }
+        .cat-4 { background-color: #118AB2; }
 
-  .cat-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:14px 8px;
-    padding:0 20px 22px;
-  }
-  .cat-item{display:flex;flex-direction:column;align-items:center;gap:6px;}
-  .cat-circle{
-    width:58px;height:58px;border-radius:50%;
-    display:flex;align-items:center;justify-content:center;
-    font-size:26px;
-    box-shadow:0 6px 14px rgba(0,0,0,0.08);
-  }
-  .cat-label{font-size:11px;font-weight:700;color:var(--ink);text-align:center;line-height:1.2;}
-
-  .mascot-peek{position:absolute;bottom:-6px;right:10px;width:110px;opacity:0.95;pointer-events:none;}
-
-  /* ---------- Library ---------- */
-  #screen-library{background:var(--cream);}
-  .library-tabs{display:flex;gap:8px;padding:0 20px 16px;overflow-x:auto;}
-  .lib-tab{flex-shrink:0;padding:9px 18px;border-radius:999px;font-weight:700;font-size:13px;background:var(--white);color:var(--ink-soft);}
-  .lib-tab.active{background:var(--teal);color:var(--white);}
-  .content-row{
-    display:flex;align-items:center;gap:14px;
-    background:var(--white);
-    margin:0 20px 12px;
-    padding:12px;
-    border-radius:var(--radius-md);
-    box-shadow:0 6px 16px rgba(0,0,0,0.05);
-  }
-  .content-thumb{
-    width:56px;height:56px;border-radius:18px;
-    display:flex;align-items:center;justify-content:center;
-    font-size:26px;flex-shrink:0;
-  }
-  .content-meta{flex:1;min-width:0;}
-  .content-title{font-weight:700;font-size:14.5px;color:var(--ink);}
-  .content-sub{font-size:12px;color:var(--ink-soft);font-weight:600;}
-  .content-action{
-    width:38px;height:38px;border-radius:50%;
-    background:var(--cream-deep);
-    display:flex;align-items:center;justify-content:center;
-    font-size:16px;flex-shrink:0;
-  }
-
-  /* ---------- Player ---------- */
-  #screen-player{background:linear-gradient(180deg,var(--teal-light) 0%, var(--cream) 45%);align-items:center;text-align:center;}
-  .player-close{align-self:flex-start;margin:18px 0 0 20px;width:36px;height:36px;border-radius:50%;background:var(--white);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-soft);}
-  .player-avatar{
-    width:220px;height:220px;border-radius:50%;
-    background:var(--white);
-    display:flex;align-items:center;justify-content:center;
-    box-shadow:var(--shadow-pop);
-    margin:20px auto 22px;
-  }
-  .player-title{font-size:21px;font-weight:800;color:var(--ink);margin:0 0 4px;}
-  .player-sub{font-size:13px;color:var(--ink-soft);font-weight:600;margin:0 0 24px;}
-  .progress-track{width:80%;height:8px;background:var(--cream-deep);border-radius:999px;margin:0 auto 8px;overflow:hidden;}
-  .progress-fill{height:100%;width:38%;background:var(--teal);border-radius:999px;}
-  .time-row{width:80%;display:flex;justify-content:space-between;font-size:11px;color:var(--ink-soft);font-weight:700;margin:0 auto 22px;}
-  .player-controls{display:flex;align-items:center;justify-content:center;gap:18px;}
-  .ctrl-btn{width:54px;height:54px;border-radius:50%;background:var(--white);display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:var(--shadow-soft);color:var(--ink);}
-  .ctrl-btn.main{width:70px;height:70px;background:var(--orange);color:var(--white);font-size:26px;box-shadow:var(--shadow-pop);}
-
-  /* ---------- Progress/Profile ---------- */
-  #screen-progress{background:var(--cream);}
-  .profile-hero{padding:26px 20px 18px;text-align:center;}
-  .profile-avatar-big{
-    width:88px;height:88px;border-radius:50%;
-    background:var(--yellow);
-    display:flex;align-items:center;justify-content:center;
-    font-size:42px;margin:0 auto 10px;
-    box-shadow:var(--shadow-soft);
-  }
-  .profile-name{font-size:19px;font-weight:800;color:var(--ink);}
-  .profile-age{font-size:12.5px;color:var(--ink-soft);font-weight:600;}
-
-  .stats-card{
-    margin:16px 20px;
-    background:var(--white);
-    border-radius:var(--radius-lg);
-    padding:22px 16px;
-    box-shadow:var(--shadow-soft);
-  }
-  .stats-row{display:flex;justify-content:space-around;}
-  .stat-circle{
-    width:70px;height:70px;border-radius:50%;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    border:5px solid var(--cream-deep);
-  }
-  .stat-circle.a{border-color:var(--orange);}
-  .stat-circle.b{border-color:var(--teal);}
-  .stat-circle.c{border-color:var(--pink);}
-  .stat-num{font-size:16px;font-weight:800;color:var(--ink);line-height:1;}
-  .stat-unit{font-size:9px;color:var(--ink-soft);font-weight:700;}
-  .stat-name{font-size:11.5px;font-weight:700;color:var(--ink-soft);text-align:center;margin-top:8px;}
-
-  .goal-block{margin:0 20px 16px;background:var(--white);border-radius:var(--radius-md);padding:16px;box-shadow:0 6px 16px rgba(0,0,0,0.05);}
-  .goal-top{display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:8px;}
-  .goal-track{height:10px;background:var(--cream-deep);border-radius:999px;overflow:hidden;}
-  .goal-fill{height:100%;background:var(--green);border-radius:999px;}
-
-  /* ---------- Bottom nav ---------- */
-  .bottom-nav{
-    display:flex;
-    background:var(--white);
-    border-radius:28px 28px 0 0;
-    box-shadow:0 -6px 20px rgba(0,0,0,0.06);
-    padding:12px 8px 18px;
-    flex-shrink:0;
-  }
-  .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--ink-soft);background:transparent;}
-  .nav-item .nav-icon{font-size:21px;}
-  .nav-label{font-size:10.5px;font-weight:700;}
-  .nav-item.active{color:var(--orange-deep);}
-
-  .hide-scroll-space{padding-bottom:6px;}
-</style>
+        /* BOTTOM NAV */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 414px;
+            background-color: var(--white);
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            border-top-left-radius: 25px;
+            border-top-right-radius: 25px;
+            z-index: 100;
+        }
+        .nav-item {
+            text-align: center;
+            color: #ccc;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .nav-item.active { color: var(--primary-orange); }
+        .nav-item span { display: block; font-size: 0.7rem; font-weight: 700; margin-top: 4px; }
+    </style>
 </head>
 <body>
 
-<div id="phone">
+<div class="app-container">
 
-  <!-- ============ SPLASH ============ -->
-  <div class="screen active" id="screen-splash">
-    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-      <svg width="180" height="180" viewBox="0 0 200 200">
-        <ellipse cx="100" cy="185" rx="60" ry="10" fill="rgba(0,0,0,0.08)"/>
-        <circle cx="60" cy="80" r="20" fill="#8B5A2B"/>
-        <circle cx="140" cy="80" r="20" fill="#8B5A2B"/>
-        <circle cx="60" cy="80" r="11" fill="#F3C68C"/>
-        <circle cx="140" cy="80" r="11" fill="#F3C68C"/>
-        <circle cx="100" cy="105" r="62" fill="#A9702F"/>
-        <ellipse cx="100" cy="120" rx="40" ry="34" fill="#F3C68C"/>
-        <circle cx="80" cy="105" r="7" fill="#3A2415"/>
-        <circle cx="120" cy="105" r="7" fill="#3A2415"/>
-        <circle cx="82" cy="102" r="2" fill="#fff"/>
-        <circle cx="122" cy="102" r="2" fill="#fff"/>
-        <ellipse cx="100" cy="122" rx="9" ry="6" fill="#8B5A2B"/>
-        <path d="M78 135 Q100 152 122 135" stroke="#8B5A2B" stroke-width="4" fill="none" stroke-linecap="round"/>
-        <circle cx="65" cy="118" r="7" fill="#F5A3A3" opacity="0.6"/>
-        <circle cx="135" cy="118" r="7" fill="#F5A3A3" opacity="0.6"/>
-      </svg>
-      <div class="splash-title">PlaySikecil</div>
-      <div class="splash-sub">Belajar Sambil Bermain 🌈</div>
-      <div class="dot-loader"><span></span><span></span><span></span></div>
-    </div>
-    <div style="padding:0 30px 40px;">
-      <button class="pill-btn" style="width:100%;background:var(--white);color:var(--orange-deep);" onclick="showView('auth')">Mula &nbsp;→</button>
-    </div>
-  </div>
-
-  <!-- ============ AUTH ============ -->
-  <div class="screen" id="screen-auth">
-    <div class="auth-hero">
-      <svg width="90" height="90" viewBox="0 0 200 200">
-        <circle cx="60" cy="80" r="18" fill="#8B5A2B"/>
-        <circle cx="140" cy="80" r="18" fill="#8B5A2B"/>
-        <circle cx="60" cy="80" r="10" fill="#F3C68C"/>
-        <circle cx="140" cy="80" r="10" fill="#F3C68C"/>
-        <circle cx="100" cy="105" r="58" fill="#A9702F"/>
-        <ellipse cx="100" cy="118" rx="37" ry="32" fill="#F3C68C"/>
-        <circle cx="82" cy="104" r="6" fill="#3A2415"/>
-        <circle cx="118" cy="104" r="6" fill="#3A2415"/>
-        <path d="M80 133 Q100 148 120 133" stroke="#8B5A2B" stroke-width="4" fill="none" stroke-linecap="round"/>
-      </svg>
-    </div>
-    <div class="auth-card">
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="tab-signin" onclick="switchAuthTab('signin')">Log Masuk</button>
-        <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Daftar</button>
-      </div>
-      <input class="input-field" type="text" placeholder="Nama Ibu Bapa" id="signup-only-1">
-      <input class="input-field" type="email" placeholder="Emel" id="auth-email">
-      <input class="input-field" type="password" placeholder="Kata Laluan" id="auth-password">
-      <p id="auth-error" style="display:none;color:#D9534F;font-size:12.5px;font-weight:700;text-align:center;margin:-4px 0 12px;"></p>
-      <button class="pill-btn" style="width:100%;margin-top:6px;" id="auth-submit-btn" onclick="handleAuthSubmit()">Log Masuk</button>
-      <p style="text-align:center;font-size:12px;color:var(--ink-soft);font-weight:600;margin-top:14px;" onclick="handleForgotPassword()">Lupa kata laluan?</p>
-    </div>
-  </div>
-
-  <!-- ============ HOME ============ -->
-  <div class="screen" id="screen-home">
-    <div class="top-safe"></div>
-    <div class="home-header">
-      <div>
-        <div class="greeting-eyebrow">Selamat pagi 👋</div>
-        <div class="greeting-name">Aisyah</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div class="streak-chip">🔥 5 hari</div>
-        <div class="avatar-circle">🐵</div>
-      </div>
+    <div id="splash-screen" class="screen active">
+        <div class="mascot-box">🐵</div>
+        <h1 style="font-size: 2.5rem; margin-top: 10px;">PlaySiKecil</h1>
+        <p style="font-size: 1.2rem; font-weight: 600;">Academy</p>
     </div>
 
-    <div class="promo-banner">
-      <div class="promo-text">
-        <h3>Cabaran Minggu Ini!</h3>
-        <p>Selesaikan 5 aktiviti &amp;<br>menang bintang bonus</p>
-        <button class="promo-btn" onclick="showView('library')">Jom Mula</button>
-      </div>
-      <svg width="90" height="90" viewBox="0 0 200 200" style="flex-shrink:0;">
-        <circle cx="60" cy="85" r="15" fill="#7A4A22"/>
-        <circle cx="140" cy="85" r="15" fill="#7A4A22"/>
-        <circle cx="100" cy="105" r="55" fill="#A9702F"/>
-        <ellipse cx="100" cy="118" rx="35" ry="30" fill="#F3C68C"/>
-        <circle cx="83" cy="103" r="6" fill="#3A2415"/>
-        <circle cx="117" cy="103" r="6" fill="#3A2415"/>
-        <path d="M82 132 Q100 145 118 132" stroke="#8B5A2B" stroke-width="4" fill="none" stroke-linecap="round"/>
-      </svg>
-    </div>
-
-    <div class="section-label">Kategori Belajar</div>
-    <div class="cat-grid">
-      <div class="cat-item"><div class="cat-circle" style="background:#FFE0B2;">🐘</div><div class="cat-label">Haiwan</div></div>
-      <div class="cat-item"><div class="cat-circle" style="background:#D6F5F1;">🍎</div><div class="cat-label">Buah</div></div>
-      <div class="cat-item"><div class="cat-circle" style="background:#FFD6E0;">🔤</div><div class="cat-label">Abjad</div></div>
-      <div class="cat-item"><div class="cat-circle" style="background:#E0D6FF;">🔢</div><div class="cat-label">Nombor</div></div>
-      <div class="cat-item"><div class="cat-circle" style="background:#D6F5F1;">🎨</div><div class="cat-label">Warna</div></div>
-      <div class="cat-item"><div class="cat-circle" style="background:#FFE0B2;">🚗</div><div class="cat-label">Kenderaan</div></div>
-      <div class="cat-item"><div class="cat-circle" style="background:#FFD6E0;">📖</div><div class="cat-label">Cerita</div></div>
-      <div class="cat-item"><div class="cat-circle" style="background:#E0D6FF;">✍️</div><div class="cat-label">Tulis</div></div>
-    </div>
-
-    <div class="section-label">Sambung Belajar</div>
-    <div class="content-row" onclick="showView('player')">
-      <div class="content-thumb" style="background:var(--teal-light);">🐘</div>
-      <div class="content-meta">
-        <div class="content-title">Haiwan Ladang</div>
-        <div class="content-sub">Flashcard • 6/10 selesai</div>
-      </div>
-      <div class="content-action">▶</div>
-    </div>
-    <div style="height:16px;"></div>
-  </div>
-
-  <!-- ============ LIBRARY ============ -->
-  <div class="screen" id="screen-library">
-    <div class="top-safe"></div>
-    <div class="home-header" style="padding-bottom:6px;">
-      <div class="greeting-name">Jelajah 🧭</div>
-    </div>
-    <div class="library-tabs">
-      <button class="lib-tab active">Semua</button>
-      <button class="lib-tab">Flashcard</button>
-      <button class="lib-tab">Permainan</button>
-      <button class="lib-tab">Cerita</button>
-      <button class="lib-tab">Muzik</button>
-    </div>
-
-    <div class="content-row" onclick="showView('player')">
-      <div class="content-thumb" style="background:#FFE0B2;">🐘</div>
-      <div class="content-meta"><div class="content-title">Haiwan Ladang</div><div class="content-sub">Flashcard • 10 kad</div></div>
-      <div class="content-action">▶</div>
-    </div>
-    <div class="content-row" onclick="showView('player')">
-      <div class="content-thumb" style="background:#D6F5F1;">🍓</div>
-      <div class="content-meta"><div class="content-title">Buah-buahan</div><div class="content-sub">Permainan • Padan</div></div>
-      <div class="content-action">♡</div>
-    </div>
-    <div class="content-row" onclick="showView('player')">
-      <div class="content-thumb" style="background:#FFD6E0;">📖</div>
-      <div class="content-meta"><div class="content-title">Si Kancil Bijak</div><div class="content-sub">Cerita • 4 min</div></div>
-      <div class="content-action">▶</div>
-    </div>
-    <div class="content-row" onclick="showView('player')">
-      <div class="content-thumb" style="background:#E0D6FF;">🎵</div>
-      <div class="content-meta"><div class="content-title">Lagu ABC</div><div class="content-sub">Nyanyian • 2 min</div></div>
-      <div class="content-action">♡</div>
-    </div>
-    <div class="content-row" onclick="showView('player')">
-      <div class="content-thumb" style="background:#FFE0B2;">🔡</div>
-      <div class="content-meta"><div class="content-title">Suku Kata KV</div><div class="content-sub">Bacaan • Peringkat 1</div></div>
-      <div class="content-action">▶</div>
-    </div>
-    <div style="height:16px;"></div>
-  </div>
-
-  <!-- ============ PLAYER ============ -->
-  <div class="screen" id="screen-player">
-    <div style="width:100%;display:flex;justify-content:space-between;">
-      <button class="player-close" onclick="showView('library')">✕</button>
-      <div style="margin:18px 20px 0;width:36px;height:36px;border-radius:50%;background:var(--white);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-soft);">♡</div>
-    </div>
-    <div class="player-avatar">
-      <svg width="150" height="150" viewBox="0 0 200 200">
-        <circle cx="60" cy="80" r="20" fill="#8B5A2B"/>
-        <circle cx="140" cy="80" r="20" fill="#8B5A2B"/>
-        <circle cx="60" cy="80" r="11" fill="#F3C68C"/>
-        <circle cx="140" cy="80" r="11" fill="#F3C68C"/>
-        <circle cx="100" cy="105" r="62" fill="#A9702F"/>
-        <ellipse cx="100" cy="120" rx="40" ry="34" fill="#F3C68C"/>
-        <circle cx="80" cy="105" r="7" fill="#3A2415"/>
-        <circle cx="120" cy="105" r="7" fill="#3A2415"/>
-        <path d="M78 135 Q100 152 122 135" stroke="#8B5A2B" stroke-width="4" fill="none" stroke-linecap="round"/>
-      </svg>
-    </div>
-    <div class="player-title">Haiwan Ladang</div>
-    <div class="player-sub">Flashcard • Kad 6 daripada 10</div>
-    <div class="progress-track"><div class="progress-fill"></div></div>
-    <div class="time-row"><span>Kad 6</span><span>Kad 10</span></div>
-    <div class="player-controls">
-      <button class="ctrl-btn">⏮</button>
-      <button class="ctrl-btn main">▶</button>
-      <button class="ctrl-btn">⏭</button>
-    </div>
-    <div style="flex:1;"></div>
-  </div>
-
-  <!-- ============ PROGRESS / PROFILE ============ -->
-  <div class="screen" id="screen-progress">
-    <div class="top-safe"></div>
-    <div class="profile-hero">
-      <div class="profile-avatar-big">🐵</div>
-      <div class="profile-name">Aisyah</div>
-      <div class="profile-age">Peringkat: Rising Star (4–6 tahun)</div>
-    </div>
-
-    <div class="stats-card">
-      <div class="stats-row">
-        <div style="display:flex;flex-direction:column;align-items:center;">
-          <div class="stat-circle a"><span class="stat-num">128</span><span class="stat-unit">bintang</span></div>
-          <div class="stat-name">Bintang</div>
+    <div id="login-screen" class="screen">
+        <div style="height: 150px; background-color: #A3E4D7; border-radius: 0 0 50% 50%; margin: -20px -20px 40px -20px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 20px;">
+             <h2 style="color: white; font-size: 2rem;">Welcome!</h2>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:center;">
-          <div class="stat-circle b"><span class="stat-num">5</span><span class="stat-unit">hari</span></div>
-          <div class="stat-name">Streak</div>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;">
-          <div class="stat-circle c"><span class="stat-num">12</span><span class="stat-unit">lencana</span></div>
-          <div class="stat-name">Lencana</div>
-        </div>
-      </div>
+        
+        <div class="mascot-box">🦒</div>
+        <h2 class="text-center" style="margin-bottom: 25px; color: var(--primary-orange);">Mari Belajar & Bermain!</h2>
+        
+        <input type="email" class="input-rounded" placeholder="Email Ibu/Bapa">
+        <input type="password" class="input-rounded" placeholder="Kata Laluan">
+        
+        <button class="btn-pill" onclick="showScreen('home-screen')">Log Masuk</button>
     </div>
 
-    <div class="goal-block">
-      <div class="goal-top"><span>Matlamat Mingguan</span><span>6/10</span></div>
-      <div class="goal-track"><div class="goal-fill" style="width:60%;"></div></div>
-    </div>
-    <div class="goal-block">
-      <div class="goal-top"><span>Bahasa Melayu</span><span>72%</span></div>
-      <div class="goal-track"><div class="goal-fill" style="width:72%;background:var(--teal);"></div></div>
-    </div>
-    <div class="goal-block">
-      <div class="goal-top"><span>English</span><span>58%</span></div>
-      <div class="goal-track"><div class="goal-fill" style="width:58%;background:var(--orange);"></div></div>
-    </div>
-    <div style="height:16px;"></div>
-  </div>
+    <div id="home-screen" class="screen">
+        <div class="header">
+            <div>
+                <p style="color: gray; font-weight: 600;">Hai, Sayang!</p>
+                <h2 style="color: var(--primary-orange);">Ahmad Ali</h2>
+            </div>
+            <div class="user-avatar" onclick="showScreen('profile-screen')">👦🏻</div>
+        </div>
 
-  <!-- ============ BOTTOM NAV ============ -->
-  <div class="bottom-nav" id="bottom-nav">
-    <button class="nav-item active" data-view="home" onclick="navTo('home')"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
-    <button class="nav-item" data-view="library" onclick="navTo('library')"><span class="nav-icon">🧭</span><span class="nav-label">Jelajah</span></button>
-    <button class="nav-item" data-view="progress" onclick="navTo('progress')"><span class="nav-icon">📊</span><span class="nav-label">Progres</span></button>
-    <button class="nav-item" data-view="profile" onclick="navTo('progress')"><span class="nav-icon">🐵</span><span class="nav-label">Profil</span></button>
-  </div>
+        <div class="promo-banner">
+            <div>
+                <h3>Belajar ABC Hari Ini!</h3>
+                <p style="font-size: 0.8rem; margin: 5px 0 10px 0;">Mari kenal huruf A - Z</p>
+                <button class="btn-small">Mula</button>
+            </div>
+            <div style="font-size: 4rem;">🦁</div>
+        </div>
+
+        <h3 style="margin-bottom: 15px;">Pilih Kategori:</h3>
+        <div class="grid-categories">
+            <div class="category-card" onclick="alert('Buka PlaySiKecil Discover')">
+                <div class="cat-icon cat-1">🌍</div>
+                <h4>Discover</h4>
+            </div>
+            <div class="category-card" onclick="alert('Buka PlaySiKecil Read')">
+                <div class="cat-icon cat-2">📖</div>
+                <h4>Read</h4>
+            </div>
+            <div class="category-card" onclick="alert('Buka PlaySiKecil Trace')">
+                <div class="cat-icon cat-3">🖍️</div>
+                <h4>Trace</h4>
+            </div>
+            <div class="category-card" onclick="alert('Buka PlaySiKecil Games')">
+                <div class="cat-icon cat-4">🎲</div>
+                <h4>Games</h4>
+            </div>
+        </div>
+    </div>
+
+    <div id="profile-screen" class="screen">
+        <h2 class="text-center" style="color: var(--primary-orange); margin-bottom: 20px;">Pencapaian Saya</h2>
+        
+        <div style="background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; text-align: center; margin-bottom: 20px;">
+            <div>
+                <div style="width: 60px; height: 60px; background: #FFD166; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 5px auto;">⭐</div>
+                <h4>150</h4>
+                <p style="font-size: 0.7rem; color: gray;">Bintang</p>
+            </div>
+            <div>
+                <div style="width: 60px; height: 60px; background: #06D6A0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 5px auto;">🔥</div>
+                <h4>5 Hari</h4>
+                <p style="font-size: 0.7rem; color: gray;">Streak</p>
+            </div>
+            <div>
+                <div style="width: 60px; height: 60px; background: #EF476F; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 5px auto;">🏆</div>
+                <h4>Level 3</h4>
+                <p style="font-size: 0.7rem; color: gray;">Tahap</p>
+            </div>
+        </div>
+
+        <button class="btn-pill" onclick="showScreen('home-screen')" style="background-color: var(--secondary-teal); box-shadow: 0 4px 0 #188c86;">Kembali ke Home</button>
+    </div>
+
+    <div class="bottom-nav" id="bottomNav" style="display: none;">
+        <div class="nav-item active" onclick="showScreen('home-screen')">
+            🏠<span>Home</span>
+        </div>
+        <div class="nav-item">
+            🔍<span>Explore</span>
+        </div>
+        <div class="nav-item">
+            📊<span>Progress</span>
+        </div>
+        <div class="nav-item" onclick="showScreen('profile-screen')">
+            👤<span>Profile</span>
+        </div>
+    </div>
 
 </div>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBHvt3QmjF1-00ljm4BtJO8tUkEFtXJ3EU",
-    authDomain: "playsikecil.firebaseapp.com",
-    projectId: "playsikecil",
-    storageBucket: "playsikecil.firebasestorage.app",
-    messagingSenderId: "1021449040786",
-    appId: "1:1021449040786:web:511cc5ec8d8ea43264c74b"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-</script>
-
-<script>
-  const navScreens = ['home','library','player','progress'];
-  const bottomNav = document.getElementById('bottom-nav');
-
-  function showView(name){
-    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-    document.getElementById('screen-'+name).classList.add('active');
-    if(navScreens.includes(name) && name!=='player'){
-      bottomNav.style.display = 'flex';
-      document.querySelectorAll('.nav-item').forEach(n=>{
-        n.classList.toggle('active', n.dataset.view===name);
-      });
-    } else {
-      bottomNav.style.display = 'none';
-    }
-  }
-
-  function navTo(name){ showView(name); }
-
-  let authMode = 'signin';
-  function switchAuthTab(tab){
-    authMode = tab;
-    document.getElementById('tab-signin').classList.toggle('active', tab==='signin');
-    document.getElementById('tab-signup').classList.toggle('active', tab==='signup');
-    document.getElementById('signup-only-1').style.display = tab==='signup' ? 'block' : 'none';
-    document.getElementById('auth-submit-btn').textContent = tab==='signup' ? 'Daftar' : 'Log Masuk';
-    hideAuthError();
-  }
-  switchAuthTab('signin');
-
-  function showAuthError(msg){
-    const el = document.getElementById('auth-error');
-    el.textContent = msg;
-    el.style.display = 'block';
-  }
-  function hideAuthError(){
-    document.getElementById('auth-error').style.display = 'none';
-  }
-
-  // Start on splash, nav hidden
-  bottomNav.style.display = 'none';
-
-  /*
-    ===== STILL TODO (later) =====
-    2. Home greeting name + streak chip -> read from Firestore
-       users/{uid}.children[activeChildId].name / .streak
-    3. Category grid taps -> route to library filtered by category id
-    4. Content row / library taps -> pass contentId into player screen,
-       log progress write to Firestore on completion
-    5. Progress screen stat circles -> aggregate from
-       users/{uid}.children[activeChildId].stars / streak / badges
-  */
-
-  // ===== FIREBASE AUTH (LIVE) =====
-  async function handleAuthSubmit(){
-    hideAuthError();
-    const email = document.getElementById('auth-email').value.trim();
-    const password = document.getElementById('auth-password').value;
-    const parentName = document.getElementById('signup-only-1').value.trim();
-
-    if(!email || !password){
-      showAuthError('Sila isi emel dan kata laluan.');
-      return;
-    }
-
-    const btn = document.getElementById('auth-submit-btn');
-    const originalLabel = btn.textContent;
-    btn.textContent = 'Sila tunggu...';
-
-    try{
-      if(authMode === 'signup'){
-        if(!parentName){
-          showAuthError('Sila isi nama ibu bapa.');
-          btn.textContent = originalLabel;
-          return;
+    // Logik ringkas untuk tukar screen
+    function showScreen(screenId) {
+        // Sorok semua screen
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        // Tunjuk screen yang dipilih
+        document.getElementById(screenId).classList.add('active');
+        
+        // Tunjuk atau sorok Bottom Nav
+        if(screenId === 'splash-screen' || screenId === 'login-screen') {
+            document.getElementById('bottomNav').style.display = 'none';
+        } else {
+            document.getElementById('bottomNav').style.display = 'flex';
         }
-        const cred = await auth.createUserWithEmailAndPassword(email, password);
-        // Create the parent's user doc in Firestore with an empty children map
-        await db.collection('users').doc(cred.user.uid).set({
-          parentName: parentName,
-          email: email,
-          hasPurchased: false,
-          children: {},
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-      } else {
-        await auth.signInWithEmailAndPassword(email, password);
-      }
-      // Success -> go to home
-      showView('home');
-    } catch(err){
-      showAuthError(friendlyAuthError(err.code));
-      btn.textContent = originalLabel;
     }
-  }
 
-  function friendlyAuthError(code){
-    switch(code){
-      case 'auth/email-already-in-use': return 'Emel ni dah didaftarkan. Cuba log masuk.';
-      case 'auth/invalid-email': return 'Format emel tak sah.';
-      case 'auth/weak-password': return 'Kata laluan terlalu pendek (min 6 aksara).';
-      case 'auth/user-not-found':
-      case 'auth/wrong-password':
-      case 'auth/invalid-credential': return 'Emel atau kata laluan salah.';
-      case 'auth/too-many-requests': return 'Terlalu banyak percubaan. Cuba lagi sekejap.';
-      default: return 'Ada masalah. Cuba sekali lagi.';
-    }
-  }
-
-  function handleForgotPassword(){
-    const email = document.getElementById('auth-email').value.trim();
-    if(!email){
-      showAuthError('Isi emel dulu, baru klik "Lupa kata laluan".');
-      return;
-    }
-    auth.sendPasswordResetEmail(email)
-      .then(()=> showAuthError('Emel reset kata laluan dihantar. Semak inbox.'))
-      .catch(err => showAuthError(friendlyAuthError(err.code)));
-  }
-
-  // If a parent is already logged in (returning visit), skip straight to home
-  auth.onAuthStateChanged(function(user){
-    if(user){
-      showView('home');
-    }
-  });
+    // Auto-hilang Splash Screen selepas 2.5 saat
+    setTimeout(() => {
+        showScreen('login-screen');
+    }, 2500);
 </script>
 
 </body>
