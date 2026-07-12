@@ -1,335 +1,368 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PlaySiKecil Academy</title>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* COLOR PALETTE & VARIABLES */
+        /* --- CSS VARIABLES & PALETTE (Pastel/Foamy Theme) --- */
         :root {
-            --primary-orange: #FF8A00;
-            --secondary-teal: #20B2AA;
-            --bg-cream: #FFF9F0;
-            --text-dark: #4A4A4A;
-            --white: #FFFFFF;
+            --bg-sky: #a1c4fd;
+            --bg-cloud: #c2e9fb;
+            --primary-btn: #ffb7b2; /* Pastel Pink */
+            --primary-btn-active: #ffdac1; /* Pastel Orange */
+            --secondary-btn: #e2f0cb; /* Pastel Green */
+            --text-dark: #5c4b51;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
+        /* --- GLOBAL STYLES --- */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Nunito', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bg-cream);
-            color: var(--text-dark);
-            /* Buang paparan force-mobile */
-        }
-
-        .app-container {
-            width: 100%;
-            position: relative;
+            background: linear-gradient(135deg, var(--bg-sky) 0%, var(--bg-cloud) 100%);
             min-height: 100vh;
-            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Keep it app-like */
+            color: var(--text-dark);
+            position: relative;
         }
 
-        /* SCREEN MANAGER */
-        .screen {
-            display: none;
-            padding: 20px;
-            animation: fadeIn 0.4s ease-in-out;
-            padding-bottom: 100px; /* Ruang untuk bottom nav di mobile */
-            max-width: 1200px; /* Limit lebar untuk desktop */
-            margin: 0 auto; /* Tengah-tengahkan content di desktop */
+        /* --- DECORATIVE CLOUDS --- */
+        .clouds-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
         }
-        .screen.active {
-            display: block;
+        .cloud {
+            background: white;
+            border-radius: 100px;
+            position: absolute;
+            opacity: 0.6;
+            animation: drift linear infinite;
+        }
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+        .cloud1 {
+            width: 150px; height: 50px; top: 10%; left: -20%;
+            animation-duration: 25s;
+        }
+        .cloud1::before { width: 70px; height: 70px; top: -30px; left: 20px; }
+        .cloud1::after { width: 90px; height: 90px; top: -40px; right: 20px; }
+        
+        .cloud2 {
+            width: 200px; height: 60px; top: 60%; left: -30%;
+            animation-duration: 35s; animation-delay: -10s;
+        }
+        .cloud2::before { width: 80px; height: 80px; top: -40px; left: 30px; }
+        .cloud2::after { width: 100px; height: 100px; top: -50px; right: 30px; }
+
+        @keyframes drift {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(120vw); }
+        }
+
+        /* --- APP CONTAINER --- */
+        #app {
+            width: 100%;
+            max-width: 480px; /* Mobile first */
+            height: 100vh;
+            max-height: 900px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (min-width: 481px) {
+            #app { height: 90vh; border: 5px solid white; }
+        }
+
+        /* --- VIEWS --- */
+        .view {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            animation: fadeIn 0.4s ease-out;
+        }
+        .view.active {
+            display: flex;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
-        /* TYPOGRAPHY */
-        h1, h2, h3 { font-weight: 700; }
-        .text-center { text-align: center; }
+        /* --- TYPOGRAPHY & HEADINGS --- */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 2px 2px 0px #ffb7b2, -2px -2px 0px #a1c4fd;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        h2 { font-size: 1.8rem; margin-bottom: 15px; }
+        p { font-size: 1.1rem; margin-bottom: 25px; font-weight: 700; }
 
-        /* BUTTONS & INPUTS */
-        .btn-pill {
-            background-color: var(--primary-orange);
-            color: var(--white);
+        /* --- FOAMY FLOATING BUTTONS --- */
+        .btn-foamy {
+            background-color: var(--primary-btn);
+            color: var(--text-dark);
             border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 900;
             border-radius: 50px;
-            padding: 15px 30px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            width: 100%;
             cursor: pointer;
-            box-shadow: 0 4px 0 #D67400;
-            transition: transform 0.1s;
-            margin-top: 20px;
-        }
-        .btn-pill:active {
-            transform: translateY(4px);
-            box-shadow: 0 0 0 #D67400;
-        }
-        .input-rounded {
-            width: 100%;
-            padding: 15px 20px;
-            border-radius: 25px;
-            border: 2px solid #FFE0B2;
-            background-color: var(--white);
-            font-size: 1rem;
-            margin-bottom: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1), inset 0 -4px 0 rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+            animation: float 3s ease-in-out infinite;
+            margin: 10px;
             outline: none;
         }
 
-        /* MASCOT & GRAPHICS */
-        .mascot-box {
-            width: 150px; height: 150px; background-color: var(--secondary-teal);
-            border-radius: 50%; margin: 0 auto 20px auto; display: flex;
-            align-items: center; justify-content: center; color: white;
-            font-size: 4rem; box-shadow: 0 8px 15px rgba(32, 178, 170, 0.3);
+        /* Float animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
 
-        /* SPLASH SCREEN */
-        #splash-screen {
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            height: 100vh; background-color: var(--primary-orange); color: var(--white);
-            max-width: 100%; padding-bottom: 0;
+        /* On Click (Pressed effect + color change) */
+        .btn-foamy:active {
+            animation: none; /* Stop floating while pressed */
+            transform: scale(0.92) translateY(5px);
+            background-color: var(--primary-btn-active);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1), inset 0 2px 0 rgba(0,0,0,0.05);
         }
-        #splash-screen .mascot-box { background-color: var(--white); color: var(--primary-orange); }
 
-        /* LOGIN SCREEN */
-        .login-curve {
-            height: 150px; background-color: #A3E4D7; border-radius: 0 0 50% 50%;
-            margin: -20px -20px 40px -20px; display: flex; align-items: flex-end;
-            justify-content: center; padding-bottom: 20px;
+        .btn-secondary {
+            background-color: var(--secondary-btn);
+            animation-delay: 0.5s; /* stagger animation */
         }
-        .login-wrapper { max-width: 450px; margin: 0 auto; } /* Tengah di desktop */
+        .btn-secondary:active { background-color: #c1e1a7; }
 
-        /* HOME DASHBOARD */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .user-avatar { width: 50px; height: 50px; border-radius: 50%; background-color: var(--secondary-teal); font-size: 1.8rem; display: flex; align-items: center; justify-content: center; cursor: pointer;}
+        /* --- DASHBOARD GRID --- */
+        .header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0 20px;
+        }
+        .user-badge {
+            background: white;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-weight: 700;
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
         
-        .promo-banner {
-            background-color: var(--secondary-teal); color: var(--white);
-            border-radius: 20px; padding: 25px; display: flex; align-items: center;
-            justify-content: space-between; margin-bottom: 25px;
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            width: 100%;
+            overflow-y: auto;
+            padding-bottom: 20px;
+            /* Hide scrollbar */
+            scrollbar-width: none;
         }
-        .promo-banner .btn-small {
-            background-color: var(--white); color: var(--secondary-teal);
-            border-radius: 20px; padding: 10px 20px; border: none; font-weight: bold; cursor: pointer;
-        }
-        
-        /* CATEGORY GRID (Mobile = 2 lajur, Desktop = 4 lajur) */
-        .grid-categories { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .grid::-webkit-scrollbar { display: none; }
+
         .category-card {
-            background-color: var(--white); border-radius: 20px; padding: 20px 10px;
-            text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); cursor: pointer;
-            border: 2px solid transparent; transition: all 0.2s;
+            background: var(--card-bg);
+            border-radius: 30px;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-soft);
+            border: 3px solid transparent;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            animation: float 4s ease-in-out infinite;
         }
-        .category-card:hover { border: 2px solid var(--primary-orange); transform: translateY(-5px); }
-        .cat-icon {
-            width: 70px; height: 70px; border-radius: 50%; margin: 0 auto 10px auto;
-            display: flex; align-items: center; justify-content: center; font-size: 2.2rem;
-        }
-        .cat-1 { background-color: #FFD166; } .cat-2 { background-color: #06D6A0; }
-        .cat-3 { background-color: #EF476F; } .cat-4 { background-color: #118AB2; }
-
-        /* PROFILE SCREEN */
-        .stat-container {
-            background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            display: flex; justify-content: space-around; text-align: center; margin-bottom: 30px;
-        }
-        .stat-circle {
-            width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center;
-            justify-content: center; font-size: 1.8rem; margin: 0 auto 10px auto;
+        .category-card:nth-child(even) { animation-delay: 1s; }
+        
+        .category-card:active {
+            animation: none;
+            transform: scale(0.9);
+            background: var(--secondary-btn);
+            border-color: white;
         }
 
-        /* NAVIGATION BAR */
-        .main-nav {
-            position: fixed; bottom: 0; width: 100%; background-color: var(--white);
-            display: flex; justify-content: space-around; padding: 15px 0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05); border-top-left-radius: 25px;
-            border-top-right-radius: 25px; z-index: 100; transition: all 0.3s;
-        }
-        .nav-item { text-align: center; color: #ccc; font-size: 1.5rem; cursor: pointer; transition: 0.2s;}
-        .nav-item.active { color: var(--primary-orange); }
-        .nav-item span { display: block; font-size: 0.75rem; font-weight: 700; margin-top: 4px; }
-        .nav-item:hover { color: var(--primary-orange); }
+        .card-icon { font-size: 3rem; margin-bottom: 10px; }
+        .card-title { font-size: 1rem; font-weight: 900; }
 
-        /* =========================================
-           RESPONSIVE DESKTOP/TABLET VIEW
-           ========================================= */
-        @media (min-width: 768px) {
-            .screen {
-                padding-top: 120px; /* Tolak content ke bawah sikit sbb navbar kat atas */
-                padding-bottom: 40px;
-            }
-
-            /* Tukar Bottom Nav jadi Top Header Menu */
-            .main-nav {
-                top: 0; bottom: auto; border-radius: 0;
-                justify-content: flex-end; padding: 20px 50px; gap: 40px;
-                box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-            }
-            .nav-item { display: flex; align-items: center; gap: 10px; }
-            .nav-item span { font-size: 1rem; margin-top: 0; }
-            .nav-item::before { content: ''; }
-
-            /* Grid jadi 4 kotak sebaris */
-            .grid-categories { grid-template-columns: repeat(4, 1fr); gap: 25px; }
-
-            /* Login Card kemas kat tengah */
-            .login-wrapper {
-                background: white; padding: 40px; border-radius: 20px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-top: 5vh;
-            }
-            .login-curve { display: none; } /* Buang curve di desktop supaya kemas */
-            
-            /* Banner Desktop lebih besar */
-            .promo-banner { padding: 40px; }
-            .promo-banner h3 { font-size: 2rem; }
-            .promo-banner p { font-size: 1.2rem; margin-bottom: 20px; }
-            .promo-banner .btn-small { font-size: 1.1rem; padding: 12px 30px; }
-            .promo-banner div:last-child { font-size: 8rem; } /* Icon singa besar sikit */
-        }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-
-    <div id="splash-screen" class="screen active">
-        <div class="mascot-box">🐵</div>
-        <h1 style="font-size: 3rem; margin-top: 10px;">PlaySiKecil</h1>
-        <p style="font-size: 1.5rem; font-weight: 600;">Academy</p>
+    <div class="clouds-container">
+        <div class="cloud cloud1"></div>
+        <div class="cloud cloud2"></div>
     </div>
 
-    <div id="login-screen" class="screen">
-        <div class="login-curve">
-             <h2 style="color: white; font-size: 2rem;">Welcome!</h2>
-        </div>
-        
-        <div class="login-wrapper">
-            <div class="mascot-box">🦒</div>
-            <h2 class="text-center" style="margin-bottom: 10px; color: var(--primary-orange);">Mari Belajar & Bermain!</h2>
-            <p class="text-center" style="margin-bottom: 25px; color: gray;">Log masuk untuk ibu bapa</p>
+    <div id="app">
+
+        <section id="splash-view" class="view active">
+            <h1>PlaySiKecil<br>Academy</h1>
+            <p>Belajar Sambil Bermain!<br>Learn Through Play!</p>
+            <img src="https://api.iconify.design/noto:lion.svg" alt="Mascot" style="width: 120px; margin-bottom: 30px; animation: float 2.5s ease-in-out infinite;">
             
-            <input type="email" class="input-rounded" placeholder="Email Ibu/Bapa">
-            <input type="password" class="input-rounded" placeholder="Kata Laluan">
-            
-            <button class="btn-pill" onclick="showScreen('home-screen')">Log Masuk</button>
-        </div>
+            <button class="btn-foamy" onclick="setLanguage('ms')">Bahasa Melayu</button>
+            <button class="btn-foamy btn-secondary" onclick="setLanguage('en')">English</button>
+        </section>
+
+        <section id="dashboard-view" class="view">
+            <div class="header">
+                <div class="user-badge">
+                    <span>🦁</span> <span id="user-name">Si Kecil</span>
+                </div>
+                <div class="user-badge" style="background: #fff3cd;">
+                    <span>⭐</span> <span id="star-count">0</span>
+                </div>
+            </div>
+            <h2 id="dash-title">Mari Belajar!</h2>
+            <div class="grid" id="category-grid">
+                </div>
+            <button class="btn-foamy" style="margin-top: 20px; padding: 10px 20px;" onclick="navigate('splash-view')">⚙️ Settings</button>
+        </section>
+
+        <section id="activity-view" class="view">
+            <h1 id="activity-title">Activity</h1>
+            <div style="font-size: 5rem; margin: 20px 0; animation: float 2s infinite;" id="activity-icon">🎨</div>
+            <p id="activity-desc">Pilih aktiviti anda</p>
+            <button class="btn-foamy" onclick="addStar()">🌟 Siap! (Dapat Bintang)</button>
+            <button class="btn-foamy btn-secondary" onclick="navigate('dashboard-view')">⬅️ Kembali</button>
+        </section>
+
     </div>
 
-    <div id="home-screen" class="screen">
-        <div class="header">
-            <div>
-                <p style="color: gray; font-weight: 600; font-size: 1.1rem;">Hai, Sayang!</p>
-                <h2 style="color: var(--primary-orange); font-size: 2rem;">Ahmad Ali</h2>
-            </div>
-            <div class="user-avatar" onclick="showScreen('profile-screen')">👦🏻</div>
-        </div>
+    <script>
+        // --- 1. STATE MANAGEMENT & LOCAL STORAGE ---
+        // Load existing data or set defaults
+        let appData = JSON.parse(localStorage.getItem('psk_data')) || {
+            lang: 'ms',
+            stars: 0,
+            childName: 'Cakka' // using name from provided design inspiration
+        };
 
-        <div class="promo-banner">
-            <div>
-                <h3>Belajar ABC Hari Ini!</h3>
-                <p>Mari kenal huruf A - Z</p>
-                <button class="btn-small">Mula</button>
-            </div>
-            <div>🦁</div>
-        </div>
+        // --- 2. JSON DATABASE (Coding Rules: Dynamic) ---
+        const db = {
+            categories: [
+                { id: 'animals', icon: '🦁', name: { ms: 'Haiwan', en: 'Animals' } },
+                { id: 'fruits', icon: '🍎', name: { ms: 'Buah', en: 'Fruits' } },
+                { id: 'numbers', icon: '🔢', name: { ms: 'Nombor', en: 'Numbers' } },
+                { id: 'colors', icon: '🎨', name: { ms: 'Warna', en: 'Colours' } },
+                { id: 'shapes', icon: '⭐', name: { ms: 'Bentuk', en: 'Shapes' } },
+                { id: 'vehicles', icon: '🚗', name: { ms: 'Kenderaan', en: 'Vehicles' } }
+            ]
+        };
 
-        <h3 style="margin-bottom: 20px; font-size: 1.5rem;">Pilih Kategori:</h3>
-        <div class="grid-categories">
-            <div class="category-card" onclick="alert('Buka PlaySiKecil Discover')">
-                <div class="cat-icon cat-1">🌍</div>
-                <h3>Discover</h3>
-            </div>
-            <div class="category-card" onclick="alert('Buka PlaySiKecil Read')">
-                <div class="cat-icon cat-2">📖</div>
-                <h3>Read</h3>
-            </div>
-            <div class="category-card" onclick="alert('Buka PlaySiKecil Trace')">
-                <div class="cat-icon cat-3">🖍️</div>
-                <h3>Trace</h3>
-            </div>
-            <div class="category-card" onclick="alert('Buka PlaySiKecil Games')">
-                <div class="cat-icon cat-4">🎲</div>
-                <h3>Games</h3>
-            </div>
-        </div>
-    </div>
+        // --- 3. CORE FUNCTIONS ---
 
-    <div id="profile-screen" class="screen">
-        <h2 class="text-center" style="color: var(--primary-orange); margin-bottom: 30px; font-size: 2rem;">Pencapaian Saya</h2>
-        
-        <div class="stat-container">
-            <div>
-                <div class="stat-circle" style="background: #FFD166;">⭐</div>
-                <h2>150</h2>
-                <p style="color: gray; font-weight: bold;">Bintang</p>
-            </div>
-            <div>
-                <div class="stat-circle" style="background: #06D6A0;">🔥</div>
-                <h2>5 Hari</h2>
-                <p style="color: gray; font-weight: bold;">Streak</p>
-            </div>
-            <div>
-                <div class="stat-circle" style="background: #EF476F;">🏆</div>
-                <h2>Tahap 3</h2>
-                <p style="color: gray; font-weight: bold;">Level</p>
-            </div>
-        </div>
-
-        <div style="max-width: 400px; margin: 0 auto;">
-            <button class="btn-pill" onclick="showScreen('home-screen')" style="background-color: var(--secondary-teal); box-shadow: 0 4px 0 #188c86;">Kembali ke Home</button>
-        </div>
-    </div>
-
-    <div class="main-nav" id="mainNav" style="display: none;">
-        <div class="nav-item active" onclick="switchNav(this); showScreen('home-screen')">
-            🏠<span>Home</span>
-        </div>
-        <div class="nav-item" onclick="switchNav(this); alert('Explore content!')">
-            🔍<span>Explore</span>
-        </div>
-        <div class="nav-item" onclick="switchNav(this); alert('Progress Report!')">
-            📊<span>Progress</span>
-        </div>
-        <div class="nav-item" onclick="switchNav(this); showScreen('profile-screen')">
-            👤<span>Profile</span>
-        </div>
-    </div>
-
-</div>
-
-<script>
-    function showScreen(screenId) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(screenId).classList.add('active');
-        
-        if(screenId === 'splash-screen' || screenId === 'login-screen') {
-            document.getElementById('mainNav').style.display = 'none';
-        } else {
-            document.getElementById('mainNav').style.display = 'flex';
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('psk_data', JSON.stringify(appData));
+            updateUI();
         }
-    }
 
-    function switchNav(element) {
-        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-        element.classList.add('active');
-    }
+        // Navigation between views
+        function navigate(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
 
-    setTimeout(() => {
-        showScreen('login-screen');
-    }, 2500);
-</script>
+        // Set Language and proceed to dashboard
+        function setLanguage(lang) {
+            appData.lang = lang;
+            saveData();
+            buildDashboard();
+            navigate('dashboard-view');
+        }
 
+        // Add a star (Gamification/Rewards)
+        function addStar() {
+            appData.stars += 1;
+            saveData();
+            alert(appData.lang === 'ms' ? 'Tahniah! Anda dapat 1 Bintang!' : 'Excellent! You got 1 Star!');
+            navigate('dashboard-view');
+        }
+
+        // Open an activity
+        function openActivity(categoryId) {
+            const category = db.categories.find(c => c.id === categoryId);
+            document.getElementById('activity-title').innerText = category.name[appData.lang];
+            document.getElementById('activity-icon').innerText = category.icon;
+            document.getElementById('activity-desc').innerText = appData.lang === 'ms' ? 'Mari belajar bersama!' : 'Let us learn together!';
+            navigate('activity-view');
+        }
+
+        // --- 4. RENDER ENGINE ---
+
+        // Update header info (stars, name)
+        function updateUI() {
+            document.getElementById('user-name').innerText = appData.childName;
+            document.getElementById('star-count').innerText = appData.stars;
+            document.getElementById('dash-title').innerText = appData.lang === 'ms' ? 'Pilih Kategori' : 'Choose Category';
+        }
+
+        // Dynamically build the category grid based on JSON
+        function buildDashboard() {
+            const grid = document.getElementById('category-grid');
+            grid.innerHTML = ''; // Clear existing
+
+            db.categories.forEach(cat => {
+                const card = document.createElement('div');
+                card.className = 'category-card';
+                card.onclick = () => openActivity(cat.id);
+                
+                card.innerHTML = `
+                    <div class="card-icon">${cat.icon}</div>
+                    <div class="card-title">${cat.name[appData.lang]}</div>
+                `;
+                grid.appendChild(card);
+            });
+            
+            updateUI();
+        }
+
+        // Initialize on load
+        window.onload = () => {
+            updateUI();
+            // Optional: skip splash if already has language set (for now we always show splash)
+        };
+    </script>
 </body>
 </html>
